@@ -2,6 +2,10 @@ package com.example.graphqldemo.app
 
 import org.springframework.stereotype.Component
 
+interface NamedService {
+    fun getName(): String
+}
+
 @Component
 class Repository {
     val books =

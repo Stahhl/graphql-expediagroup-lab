@@ -11,13 +11,12 @@ import kotlin.collections.set
 @Component
 class BookMutation(
     private val repository: Repository,
-    private val service: Service,
 ) : Mutation {
     fun createBook(payload: BookPayload): BookResponse {
         println("createBook *******************************")
         val id = UUID.randomUUID().toString()
         val book = Book(id, payload.title, payload.authorId)
         repository.books[id] = book
-        return BookResponse(book, repository, service)
+        return BookResponse(book)
     }
 }
