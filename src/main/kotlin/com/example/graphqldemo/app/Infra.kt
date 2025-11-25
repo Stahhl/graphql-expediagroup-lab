@@ -1,13 +1,11 @@
 package com.example.graphqldemo.app
 
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 
-interface NamedService {
-    fun getName(): String
-}
+interface GraphQlService
 
-@Component
-class Repository {
+@Service
+class Repository : GraphQlService {
     val books =
         mutableMapOf(
             "book1" to Book(bookId = "book1", title = "imse vimse spindel", authorId = "author1"),
@@ -46,8 +44,8 @@ class Repository {
         )
 }
 
-@Component
-class Service {
+@Service
+class Service : GraphQlService {
     val reviews =
         mutableMapOf(
             "review1" to Review("review1", "book1", "Kalle Anka", 3, "Helt ok..."),

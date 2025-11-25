@@ -1,36 +1,15 @@
 package com.example.graphqldemo.app.api
 
 import com.example.graphqldemo.app.*
-import com.expediagroup.graphql.generator.extensions.plus
-import com.expediagroup.graphql.server.spring.execution.DefaultSpringGraphQLContextFactory
-import graphql.GraphQLContext
+import com.example.graphqldemo.app.app.CreateBook
 import graphql.schema.DataFetchingEnvironment
-import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.server.ServerRequest
 
 data class BookPayload(
     val title: String,
     val authorId: String,
 )
 
-@Component
-class MyGraphQLContextFactory(
-    private val repository: Repository,
-    private val service: Service,
-) : DefaultSpringGraphQLContextFactory() {
-    override suspend fun generateContext(request: ServerRequest): GraphQLContext =
-        super.generateContext(request) +
-            mapOf(
-                Service::class.simpleName!! to service,
-                Repository::class.simpleName!! to repository,
-            )
-}
-
-inline fun <reified T> DataFetchingEnvironment.getService(): T {
-    val key = T::class.simpleName ?: error("Anonymous class?")
-    return graphQlContext.get<T>(key)
-        ?: error("GraphQLContext: service '$key' is not registered")
-}
+fun BookPayload.mapToInput(): CreateBook.Input = CreateBook.Input(title, authorId)
 
 data class BookResponse(
     private val book: Book,
@@ -121,25 +100,3 @@ data class ReviewResponse(
     val stars: Int,
     val text: String,
 )
-
-// @Component
-// class BookResolver(
-//    private val repository: Repository,
-//    private val service: Service,
-// ) : GraphQLResolver<Book> {
-//    fun author(book: Book): AuthorResponse? {
-//        val author = repository.authors[book.authorId] ?: return null
-//        return AuthorResponse(author, repository, service)
-//    }
-//
-//    fun reviews(book: Book): List<ReviewResponse> {
-//        val reviews = service.reviews.values.filter { it.booksId == book.bookId }
-//        return reviews.map { ReviewResponse(it.reviewer, it.stars, it.text) }
-//    }
-//
-//    fun publisher(book: Book): PublisherResponse {
-//        val publisher =
-//            repository.publishers.values.single { it.booksIds.contains(book.bookId) }
-//        return PublisherResponse(publisher, repository, service)
-//    }
-// }
