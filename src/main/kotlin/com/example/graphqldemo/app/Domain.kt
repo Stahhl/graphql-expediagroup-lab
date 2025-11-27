@@ -1,39 +1,40 @@
 package com.example.graphqldemo.app
 
-data class Book(
+data class BookEntity(
     val bookId: String,
     val title: String,
     val authorId: String,
 )
 
-data class Author(
+data class AuthorEntity(
     val authorId: String,
     val name: String,
-    val petId: String?,
+    val email: String,
+    val petId: String? = null,
     val booksIds: MutableList<String> = mutableListOf(),
 )
 
-data class Pet(
+data class PetEntity(
     val petId: String,
     val name: String,
-    val type: PetType,
+    val type: PetEntityType,
 )
 
-data class Publisher(
+enum class PetEntityType {
+    Dog,
+    Cat,
+}
+
+data class PublisherEntity(
     val publisherId: String,
     val name: String,
     val booksIds: MutableList<String> = mutableListOf(),
 )
 
-data class Review(
+data class ReviewEntity(
     val reviewId: String,
     val booksId: String,
     val reviewer: String,
     val stars: Int,
     val text: String,
 )
-
-enum class PetType {
-    Dog,
-    Cat,
-}

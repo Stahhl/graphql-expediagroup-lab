@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component
 class BookQuery(
     private val repository: Repository,
 ) : Query {
-    fun getBook(id: String): BookResponse? {
+    fun getBook(id: String): BookType? {
         println("getBook ****************************")
         val book = repository.books[id] ?: return null
-        return BookResponse(book)
+        return BookType(book)
     }
 
-    fun getBooks(): List<BookResponse> {
+    fun getBooks(): List<BookType> {
         println("getBooks ***************************")
-        return repository.books.values.map { BookResponse(it) }
+        return repository.books.values.map { BookType(it) }
     }
 }

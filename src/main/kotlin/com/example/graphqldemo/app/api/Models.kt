@@ -1,101 +1,101 @@
 package com.example.graphqldemo.app.api
 
 import com.example.graphqldemo.app.*
-import com.example.graphqldemo.app.app.CreateBook
-import graphql.schema.DataFetchingEnvironment
+import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
+import org.springframework.beans.factory.annotation.Autowired
 
-data class BookPayload(
-    val title: String,
-    val authorId: String,
-)
-
-fun BookPayload.mapToInput(): CreateBook.Input = CreateBook.Input(title, authorId)
-
-data class BookResponse(
-    private val book: Book,
+data class BookType(
+    private val book: BookEntity,
 ) {
     val bookId: String get() = book.bookId
     val title: String get() = book.title
 
-    fun author(dfe: DataFetchingEnvironment): AuthorResponse? {
+    fun author(
+        @GraphQLIgnore @Autowired repo: Repository,
+    ): AuthorType? {
         println("BookResponse.author called!")
-        val repo = dfe.getService<Repository>()
         val author = repo.authors[book.authorId] ?: return null
-        return AuthorResponse(author)
+        return AuthorType(author)
     }
 
-    fun reviews(dfe: DataFetchingEnvironment): List<ReviewResponse> {
+    fun reviews(
+        @GraphQLIgnore @Autowired service: Service,
+    ): List<ReviewType> {
         println("BookResponse.reviews called!")
-        val service = dfe.getService<Service>()
         val reviews = service.reviews.filter { it.value.booksId == book.bookId }.map { it.value }
-        return reviews.map { ReviewResponse(it.reviewer, it.stars, it.text) }
+        return reviews.map { ReviewType(it.reviewer, it.stars, it.text) }
     }
 
-    fun publisher(dfe: DataFetchingEnvironment): PublisherResponse {
+    fun publisher(
+        @GraphQLIgnore @Autowired repo: Repository,
+    ): PublisherType {
         println("BookResponse.publisher called!")
-        val repo = dfe.getService<Repository>()
         val publisher =
             repo.publishers
                 .filter { it.value.booksIds.contains(book.bookId) }
                 .map { it.value }
                 .single()
-        return PublisherResponse(publisher)
+        return PublisherType(publisher)
     }
 }
 
-data class AuthorResponse(
-    private val author: Author,
+data class AuthorType(
+    private val author: AuthorEntity,
 ) {
     val name: String get() = author.name
+    val email: String get() = author.email
 
-    fun pet(dfe: DataFetchingEnvironment): PetResponse? {
+    fun pet(
+        @GraphQLIgnore @Autowired repo: Repository,
+    ): PetType? {
         println("AuthorResponse.pet called!")
-        val repo = dfe.getService<Repository>()
         val pet = repo.pets[author.petId] ?: return null
         return when (pet.type) {
-            PetType.Dog -> Dog(pet.name)
-            PetType.Cat -> Cat(pet.name)
+            PetEntityType.Dog -> DogType(pet.name)
+            PetEntityType.Cat -> CatType(pet.name)
         }
     }
 
-    fun books(dfe: DataFetchingEnvironment): List<BookResponse?> {
+    fun books(
+        @GraphQLIgnore @Autowired repo: Repository,
+    ): List<BookType?> {
         println("AuthorResponse.books called!")
-        val repo = dfe.getService<Repository>()
         val books = author.booksIds.map { repo.books[it] }
-        return books.map { BookResponse(it!!) }
+        return books.map { BookType(it!!) }
     }
 }
 
-data class PublisherResponse(
-    private val publisher: Publisher,
+data class PublisherType(
+    private val publisher: PublisherEntity,
 ) {
     val name: String get() = publisher.name
 
-    fun books(dfe: DataFetchingEnvironment): List<BookResponse?> {
+    fun books(
+        @GraphQLIgnore @Autowired repo: Repository,
+    ): List<BookType?> {
         println("PublisherResponse.books called!")
-        val repo = dfe.getService<Repository>()
         val books = publisher.booksIds.map { repo.books[it] }
-        return books.map { BookResponse(it!!) }
+        return books.map { BookType(it!!) }
     }
 }
 
-abstract class PetResponse {
+abstract class PetType {
     abstract val name: String
 }
 
-data class Dog(
+data class DogType(
     override val name: String,
-) : PetResponse() {
+) : PetType() {
     fun woof(): String = "woof"
 }
 
-data class Cat(
+data class CatType(
     override val name: String,
-) : PetResponse() {
+) : PetType() {
     fun meow(): String = "meow"
 }
 
-data class ReviewResponse(
+data class ReviewType(
     val reviewer: String,
     val stars: Int,
     val text: String,
