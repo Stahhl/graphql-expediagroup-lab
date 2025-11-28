@@ -8,8 +8,7 @@ import graphql.schema.Coercing
 import graphql.schema.CoercingParseLiteralException
 import graphql.schema.CoercingParseValueException
 import graphql.schema.GraphQLScalarType
-import java.util.Locale
-import kotlin.reflect.KClass
+import java.util.*
 
 @JvmInline
 value class EmailScalarType(
@@ -77,5 +76,9 @@ object EmailCoercing : Coercing<String, String> {
         dataFetcherResult: Any,
         graphQLContext: GraphQLContext,
         locale: Locale,
-    ): String = dataFetcherResult.toString()
+    ): String {
+        val result = (dataFetcherResult as EmailScalarType).value
+        println("serialize $result")
+        return result
+    }
 }

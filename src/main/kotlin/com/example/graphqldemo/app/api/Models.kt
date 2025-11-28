@@ -43,7 +43,9 @@ data class AuthorType(
     private val author: AuthorEntity,
 ) {
     val name: String get() = author.name
-    val email: String get() = author.email
+
+//    val email: String get() = author.email
+    val email: EmailScalarType get() = EmailScalarType(author.email)
 
     fun pet(
         @GraphQLIgnore @Autowired repo: Repository,
