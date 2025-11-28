@@ -14,18 +14,23 @@ import kotlin.reflect.KClass
 @JvmInline
 value class EmailScalarType(
     override val value: String,
-) : CustomScalarType<String>
+) : CustomScalarType<String> {
+    override val companion: CustomScalarCompanion
+        get() = Companion
 
-sealed interface CustomScalarType<T> {
+    companion object : CustomScalarCompanion {
+        override val graphqlType: GraphQLScalarType = graphqlEmailType
+    }
+}
+
+interface CustomScalarType<T> {
     val value: T
 
-    companion object {
-        fun getGraphQlType(clazz: KClass<out CustomScalarType<*>>): GraphQLScalarType =
-            when (clazz) {
-                EmailScalarType::class -> graphqlEmailType
-                else -> throw IllegalArgumentException("Unknown type: $clazz")
-            }
-    }
+    val companion: CustomScalarCompanion
+}
+
+interface CustomScalarCompanion {
+    val graphqlType: GraphQLScalarType
 }
 
 val graphqlEmailType: GraphQLScalarType =

@@ -17,9 +17,13 @@ class Hooks : SchemaGeneratorHooks {
         val kClass = type.classifier as? KClass<*> ?: return null
 
         if (kClass.isSubclassOf(CustomScalarType::class)) {
-            val graphqlType = CustomScalarType.getGraphQlType(kClass as KClass<out CustomScalarType<*>>)
-            println(graphqlType)
-            return graphqlType
+            // Retrieve companion object instance via Kotlin reflection
+            val companion =
+                kClass.companionObjectInstance
+                    ?: error("E1")
+
+            // Must implement CustomScalarCompanion
+            return (companion as? CustomScalarCompanion)?.graphqlType ?: error("E2")
         }
 
         return null
