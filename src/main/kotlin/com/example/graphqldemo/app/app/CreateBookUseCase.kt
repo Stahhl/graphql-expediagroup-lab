@@ -3,8 +3,8 @@ package com.example.graphqldemo.app.app
 import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.raise.ensureNotNull
-import com.example.graphqldemo.app.BookEntity
-import com.example.graphqldemo.app.Repository
+import com.example.graphqldemo.app.domain.BookEntity
+import com.example.graphqldemo.app.infra.Repository
 import org.springframework.stereotype.Service
 import java.util.UUID
 import kotlin.collections.set

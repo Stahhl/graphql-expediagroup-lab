@@ -1,4 +1,4 @@
-package com.example.graphqldemo.app
+package com.example.graphqldemo.app.domain
 
 data class BookEntity(
     val bookId: String,

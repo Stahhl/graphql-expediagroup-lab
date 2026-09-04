@@ -1,6 +1,6 @@
 package com.example.graphqldemo.app.api
 
-import com.example.graphqldemo.app.Repository
+import com.example.graphqldemo.app.infra.Repository
 import com.expediagroup.graphql.server.operations.Query
 import org.springframework.stereotype.Component
 

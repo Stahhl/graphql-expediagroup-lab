@@ -1,8 +1,8 @@
 package com.example.graphqldemo.app.app
 
 import arrow.core.Either
-import com.example.graphqldemo.app.AuthorEntity
-import com.example.graphqldemo.app.Repository
+import com.example.graphqldemo.app.domain.AuthorEntity
+import com.example.graphqldemo.app.infra.Repository
 import org.springframework.stereotype.Service
 import java.util.*
 

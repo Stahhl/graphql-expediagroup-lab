@@ -1,6 +1,11 @@
 package com.example.graphqldemo.app.api
 
-import com.example.graphqldemo.app.*
+import com.example.graphqldemo.app.domain.AuthorEntity
+import com.example.graphqldemo.app.domain.BookEntity
+import com.example.graphqldemo.app.domain.PetEntityType
+import com.example.graphqldemo.app.domain.PublisherEntity
+import com.example.graphqldemo.app.infra.Repository
+import com.example.graphqldemo.app.infra.Service
 import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
 import org.springframework.beans.factory.annotation.Autowired
 
