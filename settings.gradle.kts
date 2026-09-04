@@ -2,6 +2,14 @@ rootProject.name = "graphqldemo"
 
 pluginManagement {
     repositories {
-        maven("https://maven.lmv.lm.se/repo")
+        mavenCentral()
+        gradlePluginPortal()
+//        maven("https://maven.lmv.lm.se/repo")
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
     }
 }

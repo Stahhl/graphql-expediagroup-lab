@@ -18,9 +18,10 @@ java {
 }
 
 repositories {
-    maven {
-        url = uri("https://maven.lmv.lm.se/repo")
-    }
+    mavenCentral()
+//    maven {
+//        url = uri("https://maven.lmv.lm.se/repo")
+//    }
 }
 
 dependencies {
