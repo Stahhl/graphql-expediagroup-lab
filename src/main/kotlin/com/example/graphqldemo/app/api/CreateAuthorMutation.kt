@@ -1,29 +1,29 @@
 package com.example.graphqldemo.app.api
 
 import com.example.graphqldemo.app.app.CreateAuthorUseCase
+import com.example.graphqldemo.app.domain.Email
+import com.expediagroup.graphql.generator.annotations.GraphQLDescription
 import com.expediagroup.graphql.server.operations.Mutation
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 
-@Service
+@Component
 class CreateAuthorMutation(
     private val createAuthor: CreateAuthorUseCase,
 ) : Mutation {
-    fun createAuthor(payload: CreateAuthorPayload): AuthorMutationResult {
-        val result = createAuthor.execute(payload.mapToInput())
-
-        return result.fold(
-            ifLeft = { error -> CreateAuthorError(error.message) },
-            ifRight = { authorEntity -> CreateAuthorOk(AuthorType(authorEntity)) },
+    @GraphQLDescription("Register a new author")
+    fun createAuthor(input: CreateAuthorInput): AuthorMutationResult =
+        createAuthor.execute(input.toUseCaseInput()).fold(
+            ifLeft = { CreateAuthorError(it.message) },
+            ifRight = { CreateAuthorOk(AuthorType(it)) },
         )
-    }
 
-    // Input
-    data class CreateAuthorPayload(
+    // Input. Email är redan validerad av scalaren när vi kommer hit.
+    data class CreateAuthorInput(
         val name: String,
-        val email: EmailScalarType,
+        val email: Email,
     )
 
-    fun CreateAuthorPayload.mapToInput(): CreateAuthorUseCase.Input = CreateAuthorUseCase.Input(name = this.name, email = this.email.value)
+    private fun CreateAuthorInput.toUseCaseInput(): CreateAuthorUseCase.Input = CreateAuthorUseCase.Input(name = name, email = email)
 
     // Output
     interface AuthorMutationResult

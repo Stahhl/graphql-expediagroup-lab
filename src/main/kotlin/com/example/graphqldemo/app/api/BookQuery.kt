@@ -1,21 +1,17 @@
 package com.example.graphqldemo.app.api
 
-import com.example.graphqldemo.app.infra.Repository
+import com.example.graphqldemo.app.infra.Database
+import com.expediagroup.graphql.generator.annotations.GraphQLDescription
 import com.expediagroup.graphql.server.operations.Query
 import org.springframework.stereotype.Component
 
 @Component
 class BookQuery(
-    private val repository: Repository,
+    private val database: Database,
 ) : Query {
-    fun getBook(id: String): BookType? {
-        println("getBook ****************************")
-        val book = repository.books[id] ?: return null
-        return BookType(book)
-    }
+    @GraphQLDescription("Look up a single book by id")
+    fun book(id: String): BookType? = database.books[id]?.let(::BookType)
 
-    fun getBooks(): List<BookType> {
-        println("getBooks ***************************")
-        return repository.books.values.map { BookType(it) }
-    }
+    @GraphQLDescription("All books in the catalogue")
+    fun books(): List<BookType> = database.books.values.map(::BookType)
 }

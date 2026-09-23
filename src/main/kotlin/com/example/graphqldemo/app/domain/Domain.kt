@@ -4,14 +4,14 @@ data class BookEntity(
     val bookId: String,
     val title: String,
     val authorId: String,
+    val publisherId: String? = null,
 )
 
 data class AuthorEntity(
     val authorId: String,
     val name: String,
-    val email: String,
+    val email: Email,
     val petId: String? = null,
-    val booksIds: MutableList<String> = mutableListOf(),
 )
 
 data class PetEntity(
@@ -28,12 +28,11 @@ enum class PetEntityType {
 data class PublisherEntity(
     val publisherId: String,
     val name: String,
-    val booksIds: MutableList<String> = mutableListOf(),
 )
 
 data class ReviewEntity(
     val reviewId: String,
-    val booksId: String,
+    val bookId: String,
     val reviewer: String,
     val stars: Int,
     val text: String,

@@ -1,0 +1,97 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+interface Pet {
+  name: String!
+}
+
+union AuthorMutationResult = CreateAuthorError | CreateAuthorOk
+
+union BookMutationResult = CreateBookError | CreateBookOk
+
+"Someone who has written at least one book"
+type Author {
+  books: [Book!]!
+  email: Email!
+  name: String!
+  pet: Pet
+}
+
+"A book in the catalogue"
+type Book {
+  "The author who wrote this book"
+  author: Author
+  bookId: String!
+  "The publisher, or null if the book is unpublished"
+  publisher: Publisher
+  "Reviews from the external review service"
+  reviews: [Review!]!
+  title: String!
+}
+
+type Cat implements Pet {
+  meow: String!
+  name: String!
+}
+
+type CreateAuthorError {
+  message: String!
+}
+
+type CreateAuthorOk {
+  author: Author!
+}
+
+type CreateBookError {
+  message: String!
+}
+
+type CreateBookOk {
+  book: Book!
+}
+
+type Dog implements Pet {
+  name: String!
+  woof: String!
+}
+
+type Mutation {
+  "Register a new author"
+  createAuthor(input: CreateAuthorInput!): AuthorMutationResult!
+  "Add a book to the catalogue"
+  createBook(input: CreateBookInput!): BookMutationResult!
+}
+
+type Publisher {
+  books: [Book!]!
+  name: String!
+}
+
+type Query {
+  "Look up a single book by id"
+  book(id: String!): Book
+  "All books in the catalogue"
+  books: [Book!]!
+}
+
+type Review {
+  reviewer: String!
+  "Rating from 1 to 5"
+  stars: Int!
+  text: String!
+}
+
+"A valid email address, e.g. \"jane@example.com\""
+scalar Email
+
+input CreateAuthorInput {
+  email: Email!
+  name: String!
+}
+
+input CreateBookInput {
+  authorId: String!
+  title: String!
+}
